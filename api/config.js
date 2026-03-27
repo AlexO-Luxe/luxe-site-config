@@ -2,18 +2,16 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate');
 
+  const itemId = req.query.itemId || '11611616231';
+
   try {
     const query = `
       query {
-        boards(ids: [18392931240]) {
-          items_page(limit: 10) {
-            items {
-              name
-              column_values {
-                id
-                text
-              }
-            }
+        items(ids: [${itemId}]) {
+          name
+          column_values {
+            id
+            text
           }
         }
       }
@@ -29,17 +27,20 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const items = data?.data?.boards?.[0]?.items_page?.items;
+    const items = data?.data?.items;
 
     if (!items || items.length === 0) {
-      return res.status(404).json({ error: 'No items found on board' });
+      return res.status(404).json({ error: 'Item not found', itemId });
     }
 
-    // Build config from first item's column values
-    // Column IDs below — update these to match your actual Monday column IDs
     const cols = {};
     items[0].column_values.forEach(col => {
-      cols[col.id] = col.text;
+      try {
+        const parsed = JSON.parse(col.text);
+        cols[col.id] = parsed?.url || parsed || col.text;
+      } catch(e) {
+        cols[col.id] = col.text;
+      }
     });
 
     const config = {
