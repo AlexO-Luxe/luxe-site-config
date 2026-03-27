@@ -43,11 +43,11 @@ export default async function handler(req, res) {
     });
 
     const config = {
-      google_rating:  cols['google_rating']  || '4.9',
-      google_maps:    cols['google_maps']    || '',
-      phone:          cols['phone']          || '',
-      whatsapp:       cols['whatsapp']       || '',
-      jotform_url:    cols['jotform_url']    || '',
+      google_rating:  cols['text_mm1v3ana']  || '4.9',
+      google_maps:    cols['link_mm1v9qw1']  || '',
+      phone:          cols['text_mm1vgwsa']  || '',
+      whatsapp:       cols['text_mm1vjm9v']  || '',
+      jotform_url:    cols['link_mm1v1egy']  || '',
     };
 
     res.status(200).json(config);
